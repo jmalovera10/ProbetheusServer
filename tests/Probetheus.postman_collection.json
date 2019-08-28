@@ -1,0 +1,92 @@
+{
+	"info": {
+		"_postman_id": "139cc8fd-7302-45cc-b79f-10b04c2d21a6",
+		"name": "Probetheus",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET MEASUREMENTS",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/API/measurements/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"API",
+						"measurements",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST MEASUREMENT",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ID_USER\": \"8bbf58c5076807877a9256401a0a7ce19fcba511a8ece35f08eb995af8b4cda1\",\n\t\"ID_SENSOR\": 1,\n\t\"VALUE_MEASURED\": 10.0,\n\t\"UNITS\": \"N/A\",\n\t\"MEASUREMENT_TIME\": 1566956635285,\n\t\"LATITUDE\": 4.928153,\n\t\"LONGITUDE\": -74.051225\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8081/API/measurement",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"API",
+						"measurement"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST USER",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ID\": \"8bbf58c5076807877a9256401a0a7ce19fcba511a8ece35f08eb995af8b4cda1\",\n\t\"NAME\": \"Juan Manuel\",\n\t\"SEX\": \"M\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8081/API/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"API",
+						"user"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
