@@ -57,8 +57,17 @@ exports.postMeasurement = (req, res) => {
                 console.log(err);
                 res.status(500).send(err);
             }
-            console.log('The solution is: ', rows);
-            res.status(200).send(req.body);
+            connection.query('UPDATE USERS SET SCORE = SCORE + 50 WHERE ID=?',[measurement.ID_USER],
+                (err, values, flds)=>{
+                    if(err){
+                        console.log(err);
+                        res.status(500).send(err);
+                    }
+                    res.status(200).send({
+                        ID_USER: measurement.ID_USER,
+                        SCORE: 50
+                    });
+                });
         });
 
     connection.end()

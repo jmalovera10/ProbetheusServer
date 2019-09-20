@@ -16,7 +16,7 @@ exports.postUser = (req, res) => {
 
     connection.connect();
 
-    connection.query('INSERT INTO USERS(ID, NAME, SEX) VALUES (?,?,?)', [user.ID, user.NAME, user.SEX],
+    connection.query('INSERT INTO USERS(ID, NAME, SEX, SCORE) VALUES (?,?,?,?)', [user.ID, user.NAME, user.SEX, 0],
         function (err, rows, fields) {
             if (err){
                 console.log(err);
