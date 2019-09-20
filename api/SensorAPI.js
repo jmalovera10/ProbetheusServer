@@ -67,8 +67,7 @@ exports.postMeasurement = (req, res) => {
                         ID_USER: measurement.ID_USER,
                         SCORE: 50
                     });
+                    connection.end()
                 });
         });
-
-    connection.end()
 };
