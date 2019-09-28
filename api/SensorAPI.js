@@ -33,6 +33,64 @@ exports.getSensorMeasurements = (req, res) => {
 };
 
 /**
+ * Method that retrieves all the measurements from a given sensor
+ * @param req
+ * @param res
+ */
+exports.getUserMeasurements = (req, res) => {
+    let userId = req.params.userId;
+    console.log(userId);
+
+    let connection = mysql.createConnection({
+        host: process.env.MYSQL_HOST,
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
+        database: process.env.MYSQL_DATABASE
+    });
+
+    connection.connect();
+
+    connection.query('SELECT * FROM MEASUREMENTS WHERE ID_USER=? LIMIT 10', [userId], function (err, rows, fields) {
+        if (err){
+            console.log(err);
+            res.status(500).send(err);
+        }
+        console.log('The solution is: ', rows);
+        res.status(200).send(rows);
+    });
+
+    connection.end()
+};
+
+/**
+ * Method that retrieves all the measurements from a given sensor
+ * @param req
+ * @param res
+ */
+exports.getRecentMeasurements = (req, res) => {
+
+    let connection = mysql.createConnection({
+        host: process.env.MYSQL_HOST,
+        user: process.env.MYSQL_USER,
+        password: process.env.MYSQL_PASSWORD,
+        database: process.env.MYSQL_DATABASE
+    });
+
+    connection.connect();
+
+    connection.query('SELECT * FROM MEASUREMENTS ORDER BY MEASUREMENT_TIME DESC LIMIT 20', function (err, rows, fields) {
+        if (err){
+            console.log(err);
+            res.status(500).send(err);
+        }
+        console.log('The solution is: ', rows);
+        res.status(200).send(rows);
+    });
+
+    connection.end()
+};
+
+/**
  * Method that stores the information of a sensor's measurement
  * @param req
  * @param res
