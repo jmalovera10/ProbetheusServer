@@ -20,6 +20,10 @@ app.get('/API/measurements/user/:userId', (req,res)=>{
     SensorAPI.getUserMeasurements(req,res);
 });
 
+app.get('/API/measurements', (req,res)=>{
+    SensorAPI.getRecentMeasurements(req,res);
+});
+
 app.post('/API/measurement', (req,res)=>{
     SensorAPI.postMeasurement(req,res);
 });
