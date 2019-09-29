@@ -21,7 +21,7 @@ exports.getSensorMeasurements = (req, res) => {
     connection.connect();
 
     connection.query('SELECT * FROM MEASUREMENTS WHERE ID_SENSOR=?', [sensorId], function (err, rows, fields) {
-        if (err){
+        if (err) {
             console.log(err);
             res.status(500).send(err);
         }
@@ -50,14 +50,16 @@ exports.getUserMeasurements = (req, res) => {
 
     connection.connect();
 
-    connection.query('SELECT * FROM MEASUREMENTS WHERE ID_USER=? LIMIT 10', [userId], function (err, rows, fields) {
-        if (err){
-            console.log(err);
-            res.status(500).send(err);
-        }
-        console.log('The solution is: ', rows);
-        res.status(200).send(rows);
-    });
+    connection.query('SELECT S.NAME AS SENSOR_NAME, M.VALUE_MEASURED, M.UNITS, M.MEASUREMENT_TIME, M.LATITUDE, M.LONGITUDE FROM ' +
+        '(MEASUREMENTS M INNER JOIN SENSOR S ON S.ID=M.ID_SENSOR) WHERE M.ID_USER=? LIMIT 10', [userId],
+        function (err, rows, fields) {
+            if (err) {
+                console.log(err);
+                res.status(500).send(err);
+            }
+            console.log('The solution is: ', rows);
+            res.status(200).send(rows);
+        });
 
     connection.end()
 };
@@ -79,7 +81,7 @@ exports.getRecentMeasurements = (req, res) => {
     connection.connect();
 
     connection.query('SELECT * FROM MEASUREMENTS ORDER BY MEASUREMENT_TIME DESC LIMIT 20', function (err, rows, fields) {
-        if (err){
+        if (err) {
             console.log(err);
             res.status(500).send(err);
         }
@@ -111,13 +113,13 @@ exports.postMeasurement = (req, res) => {
         [measurement.ID_USER, measurement.ID_SENSOR, measurement.VALUE_MEASURED, measurement.UNITS, measurement.MEASUREMENT_TIME,
             measurement.LATITUDE, measurement.LONGITUDE],
         function (err, rows, fields) {
-            if (err){
+            if (err) {
                 console.log(err);
                 res.status(500).send(err);
             }
-            connection.query('UPDATE USERS SET SCORE = SCORE + 50 WHERE ID=?',[measurement.ID_USER],
-                (err, values, flds)=>{
-                    if(err){
+            connection.query('UPDATE USERS SET SCORE = SCORE + 50 WHERE ID=?', [measurement.ID_USER],
+                (err, values, flds) => {
+                    if (err) {
                         console.log(err);
                         res.status(500).send(err);
                     }
