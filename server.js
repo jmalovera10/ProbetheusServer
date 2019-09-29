@@ -32,6 +32,10 @@ app.post('/API/user', (req,res)=>{
     UserAPI.postUser(req,res);
 });
 
+app.get('/API/user/:userId', (req,res)=>{
+    UserAPI.getUser(req,res);
+});
+
 app.listen(process.env.PORT || 8081, () => {
     testId = 1;
     console.log(`Listening on :${process.env.PORT || 8081}`);

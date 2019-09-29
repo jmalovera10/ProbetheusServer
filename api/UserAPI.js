@@ -35,3 +35,36 @@ exports.postUser = (req, res) => {
         console.log(e);
     }
 };
+
+/**
+ * Method that gets a user by a given id
+ * @param req
+ * @param res
+ */
+exports.getUser = (req, res) => {
+    try {
+        let userId = req.params.userId;
+        let connection = mysql.createConnection({
+            host: process.env.MYSQL_HOST,
+            user: process.env.MYSQL_USER,
+            password: process.env.MYSQL_PASSWORD,
+            database: process.env.MYSQL_DATABASE
+        });
+
+        connection.connect();
+
+        connection.query('SELECT * FROM USERS WHERE ID=?', [userId],
+            function (err, rows, fields) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send(err);
+                }
+                console.log('User retrieved: ', rows[0]);
+                res.status(200).send(rows[0]);
+            });
+
+        connection.end()
+    }catch (e) {
+        console.log(e);
+    }
+};
