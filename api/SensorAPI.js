@@ -39,7 +39,6 @@ exports.getSensorMeasurements = (req, res) => {
  */
 exports.getUserMeasurements = (req, res) => {
     let userId = req.params.userId;
-    console.log(userId);
 
     let connection = mysql.createConnection({
         host: process.env.MYSQL_HOST,
@@ -57,7 +56,7 @@ exports.getUserMeasurements = (req, res) => {
                 console.log(err);
                 res.status(500).send(err);
             }
-            console.log('The solution is: ', rows);
+            console.log('User measurements : ', rows);
             res.status(200).send(rows);
         });
 
