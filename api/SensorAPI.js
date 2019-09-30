@@ -90,7 +90,7 @@ exports.getRecentMeasurements = (req, res) => {
 
         connection.connect();
 
-        connection.query('SELECT S.NAME, S.MIN_VALUE, S.MAX_VALUE, M.VALUE_MEASURED, M.UNITS, M.MEASUREMENT_TIME, ' +
+        connection.query('SELECT S.NAME, S.MIN_VALUE, S.MAX_VALUE, M.ID, M.VALUE_MEASURED, M.UNITS, M.MEASUREMENT_TIME, ' +
             'M.LATITUDE, M.LONGITUDE FROM (MEASUREMENTS M INNER JOIN SENSOR S ON S.ID=M.ID_SENSOR) ORDER BY M.MEASUREMENT_TIME DESC LIMIT 20',
             function (err, rows, fields) {
                 if (err) {
