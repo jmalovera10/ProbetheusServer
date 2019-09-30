@@ -1,6 +1,4 @@
 const mysql = require('mysql');
-//const AWS = require('aws-sdk');
-//AWS.config.update({region: 'us-east-1'});
 
 /**
  * Method that retrieves all the measurements from a given sensor
@@ -8,28 +6,33 @@ const mysql = require('mysql');
  * @param res
  */
 exports.getSensorMeasurements = (req, res) => {
-    let sensorId = req.params.sensorId;
-    console.log(sensorId);
+    try {
 
-    let connection = mysql.createConnection({
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
-        database: process.env.MYSQL_DATABASE
-    });
+        let sensorId = req.params.sensorId;
+        console.log(sensorId);
 
-    connection.connect();
+        let connection = mysql.createConnection({
+            host: process.env.MYSQL_HOST,
+            user: process.env.MYSQL_USER,
+            password: process.env.MYSQL_PASSWORD,
+            database: process.env.MYSQL_DATABASE
+        });
 
-    connection.query('SELECT * FROM MEASUREMENTS WHERE ID_SENSOR=?', [sensorId], function (err, rows, fields) {
-        if (err) {
-            console.log(err);
-            res.status(500).send(err);
-        }
-        console.log('The solution is: ', rows);
-        res.status(200).send(rows);
-    });
+        connection.connect();
 
-    connection.end()
+        connection.query('SELECT * FROM MEASUREMENTS WHERE ID_SENSOR=?', [sensorId], function (err, rows, fields) {
+            if (err) {
+                console.log(err);
+                res.status(500).send(err);
+            }
+            console.log('The solution is: ', rows);
+            res.status(200).send(rows);
+        });
+
+        connection.end()
+    }catch (e) {
+        console.log(e);
+    }
 };
 
 /**
@@ -38,29 +41,35 @@ exports.getSensorMeasurements = (req, res) => {
  * @param res
  */
 exports.getUserMeasurements = (req, res) => {
-    let userId = req.params.userId;
 
-    let connection = mysql.createConnection({
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
-        database: process.env.MYSQL_DATABASE
-    });
+    try {
 
-    connection.connect();
+        let userId = req.params.userId;
 
-    connection.query('SELECT S.NAME AS SENSOR_NAME, M.VALUE_MEASURED, M.UNITS, M.MEASUREMENT_TIME, M.LATITUDE, M.LONGITUDE FROM ' +
-        '(MEASUREMENTS M INNER JOIN SENSOR S ON S.ID=M.ID_SENSOR) WHERE M.ID_USER=? LIMIT 10', [userId],
-        function (err, rows, fields) {
-            if (err) {
-                console.log(err);
-                res.status(500).send(err);
-            }
-            console.log('User measurements : ', rows);
-            res.status(200).send(rows);
+        let connection = mysql.createConnection({
+            host: process.env.MYSQL_HOST,
+            user: process.env.MYSQL_USER,
+            password: process.env.MYSQL_PASSWORD,
+            database: process.env.MYSQL_DATABASE
         });
 
-    connection.end()
+        connection.connect();
+
+        connection.query('SELECT S.NAME AS SENSOR_NAME, M.VALUE_MEASURED, M.UNITS, M.MEASUREMENT_TIME, M.LATITUDE, M.LONGITUDE FROM ' +
+            '(MEASUREMENTS M INNER JOIN SENSOR S ON S.ID=M.ID_SENSOR) WHERE M.ID_USER=? LIMIT 10', [userId],
+            function (err, rows, fields) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send(err);
+                }
+                console.log('User measurements : ', rows);
+                res.status(200).send(rows);
+            });
+
+        connection.end()
+    }catch (e) {
+        console.log(e);
+    }
 };
 
 /**
@@ -70,25 +79,32 @@ exports.getUserMeasurements = (req, res) => {
  */
 exports.getRecentMeasurements = (req, res) => {
 
-    let connection = mysql.createConnection({
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
-        database: process.env.MYSQL_DATABASE
-    });
+    try {
 
-    connection.connect();
+        let connection = mysql.createConnection({
+            host: process.env.MYSQL_HOST,
+            user: process.env.MYSQL_USER,
+            password: process.env.MYSQL_PASSWORD,
+            database: process.env.MYSQL_DATABASE
+        });
 
-    connection.query('SELECT * FROM MEASUREMENTS ORDER BY MEASUREMENT_TIME DESC LIMIT 20', function (err, rows, fields) {
-        if (err) {
-            console.log(err);
-            res.status(500).send(err);
-        }
-        console.log('The solution is: ', rows);
-        res.status(200).send(rows);
-    });
+        connection.connect();
 
-    connection.end()
+        connection.query('SELECT S.NAME, S.MIN_VALUE, S.MAX_VALUE, M.VALUE_MEASURED, M.UNITS, M.MEASUREMENT_TIME, ' +
+            'M.LATITUDE, M.LONGITUDE FROM (MEASUREMENTS M INNER JOIN SENSOR S ON S.ID=M.ID_SENSOR) ORDER BY M.MEASUREMENT_TIME DESC LIMIT 20',
+            function (err, rows, fields) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send(err);
+                }
+                console.log('The solution is: ', rows);
+                res.status(200).send(rows);
+            });
+
+        connection.end()
+    }catch (e) {
+        console.log(e);
+    }
 };
 
 /**
@@ -97,36 +113,42 @@ exports.getRecentMeasurements = (req, res) => {
  * @param res
  */
 exports.postMeasurement = (req, res) => {
-    let measurement = req.body;
-    let connection = mysql.createConnection({
-        host: process.env.MYSQL_HOST,
-        user: process.env.MYSQL_USER,
-        password: process.env.MYSQL_PASSWORD,
-        database: process.env.MYSQL_DATABASE
-    });
 
-    connection.connect();
+    try {
 
-    connection.query('INSERT INTO MEASUREMENTS(ID_USER, ID_SENSOR, VALUE_MEASURED, UNITS, MEASUREMENT_TIME, LATITUDE, LONGITUDE) ' +
-        'VALUES (?,?,?,?,?,?,?)',
-        [measurement.ID_USER, measurement.ID_SENSOR, measurement.VALUE_MEASURED, measurement.UNITS, measurement.MEASUREMENT_TIME,
-            measurement.LATITUDE, measurement.LONGITUDE],
-        function (err, rows, fields) {
-            if (err) {
-                console.log(err);
-                res.status(500).send(err);
-            }
-            connection.query('UPDATE USERS SET SCORE = SCORE + 50 WHERE ID=?', [measurement.ID_USER],
-                (err, values, flds) => {
-                    if (err) {
-                        console.log(err);
-                        res.status(500).send(err);
-                    }
-                    res.status(200).send({
-                        ID_USER: measurement.ID_USER,
-                        SCORE: 50
-                    });
-                    connection.end()
-                });
+        let measurement = req.body;
+        let connection = mysql.createConnection({
+            host: process.env.MYSQL_HOST,
+            user: process.env.MYSQL_USER,
+            password: process.env.MYSQL_PASSWORD,
+            database: process.env.MYSQL_DATABASE
         });
+
+        connection.connect();
+
+        connection.query('INSERT INTO MEASUREMENTS(ID_USER, ID_SENSOR, VALUE_MEASURED, UNITS, MEASUREMENT_TIME, LATITUDE, LONGITUDE) ' +
+            'VALUES (?,?,?,?,?,?,?)',
+            [measurement.ID_USER, measurement.ID_SENSOR, measurement.VALUE_MEASURED, measurement.UNITS, measurement.MEASUREMENT_TIME,
+                measurement.LATITUDE, measurement.LONGITUDE],
+            function (err, rows, fields) {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send(err);
+                }
+                connection.query('UPDATE USERS SET SCORE = SCORE + 50 WHERE ID=?', [measurement.ID_USER],
+                    (err, values, flds) => {
+                        if (err) {
+                            console.log(err);
+                            res.status(500).send(err);
+                        }
+                        res.status(200).send({
+                            ID_USER: measurement.ID_USER,
+                            SCORE: 50
+                        });
+                        connection.end()
+                    });
+            });
+    }catch (e) {
+        console.log(e);
+    }
 };
