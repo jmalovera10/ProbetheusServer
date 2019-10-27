@@ -31,7 +31,8 @@ app.post('/API/measurement', (req,res)=>{
     SensorAPI.postMeasurement(req,res);
 });
 
-app.post('/API/measurement/apparentColor', (req,res)=>{
+app.post('/API/measurement/apparentColor', upload.single('photo'),(req,res)=>{
+    console.log(req.body);
     SensorAPI.postApparentColorMeasurement(req,res);
 });
 
