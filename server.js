@@ -4,6 +4,7 @@ const SensorAPI = require("./api/SensorAPI");
 const UserAPI = require('./api/UserAPI');
 const path = require("path");
 const bodyParser = require("body-parser");
+const multer = require('multer');
 
 const app = express();
 
@@ -11,6 +12,8 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, "frontend/build")));
 app.use(express.static(path.join(__dirname, '/contest_data')));
+
+let upload = multer({dest:'apparent_color/'});
 
 app.get('/API/measurements/:sensorId', (req,res)=>{
     SensorAPI.getSensorMeasurements(req,res);
@@ -26,6 +29,10 @@ app.get('/API/measurements', (req,res)=>{
 
 app.post('/API/measurement', (req,res)=>{
     SensorAPI.postMeasurement(req,res);
+});
+
+app.post('/API/measurement/apparentColor', (req,res)=>{
+    SensorAPI.postApparentColorMeasurement(req,res);
 });
 
 app.post('/API/user', (req,res)=>{
