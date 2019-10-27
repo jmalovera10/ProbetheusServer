@@ -56,7 +56,7 @@ exports.getUserMeasurements = (req, res) => {
         connection.connect();
 
         connection.query('SELECT S.NAME AS SENSOR_NAME, M.VALUE_MEASURED, M.UNITS, M.MEASUREMENT_TIME, M.LATITUDE, M.LONGITUDE FROM ' +
-            '(MEASUREMENTS M INNER JOIN SENSOR S ON S.ID=M.ID_SENSOR) WHERE M.ID_USER=? LIMIT 10', [userId],
+            '(MEASUREMENTS M INNER JOIN SENSOR S ON S.ID=M.ID_SENSOR) WHERE M.ID_USER=? LIMIT 10 ORDER BY M.MEASUREMENT_TIME DESC', [userId],
             function (err, rows, fields) {
                 if (err) {
                     console.log(err);
