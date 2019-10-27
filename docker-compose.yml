@@ -1,0 +1,15 @@
+version: "1"
+services:
+  app:
+    container_name: probetheus_server
+    command: npm run start
+    build: .
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+    
+  db:
+    image: mysql1
+    ports:
+      - "3306:33060"
