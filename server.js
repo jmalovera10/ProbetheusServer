@@ -13,7 +13,16 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, "frontend/build")));
 app.use(express.static(path.join(__dirname, '/contest_data')));
 
-let upload = multer({dest: 'apparent_color/'});
+const Storage = multer.diskStorage({
+    destination(req, file, callback) {
+        callback(null, './apparent_color')
+    },
+    filename(req, file, callback) {
+        callback(null, `${file.fieldname}_${Date.now()}_${file.originalname}`)
+    },
+})
+
+let upload = multer({ storage: Storage });
 
 app.get('/API/measurements/:sensorId', (req, res) => {
     SensorAPI.getSensorMeasurements(req, res);
