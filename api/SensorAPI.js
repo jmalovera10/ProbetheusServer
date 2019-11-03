@@ -162,7 +162,7 @@ exports.postApparentColorMeasurement = (req, res) => {
 
     try {
         let measurement = req.body;
-        console.log(measurement.meta_data);
+        console.log(measurement);
         res.status(200).send({
             status: 'ok'
         });
