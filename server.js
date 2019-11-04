@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, '/contest_data')));
 
 const Storage = multer.diskStorage({
     destination(req, file, callback) {
-        callback(null, './apparent_color')
+        callback(null, path.join(__dirname, "/apparent_color"))
     },
     filename(req, file, callback) {
         callback(null, `${file.fieldname}_${Date.now()}_${file.originalname}`)
