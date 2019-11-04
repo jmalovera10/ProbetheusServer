@@ -172,6 +172,7 @@ exports.postApparentColorMeasurement = (req, res) => {
         let measurement = req.body;
         measurement.imagePath = req.file.path;
         ch.sendToQueue(process.env.QUEUE_NAME, new Buffer(JSON.stringify(measurement)));
+        console.log(measurement);
         res.status(200).send({
             status: 'ok'
         });
