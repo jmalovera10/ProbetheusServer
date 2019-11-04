@@ -1,4 +1,12 @@
 const mysql = require('mysql');
+const amqp = require('amqplib/callback_api');
+let ch = null;
+
+amqp.connect(process.env.RBMQ_URL,(err, conn)=>{
+   conn.createChannel((err, channel)=>{
+       ch = channel;
+   })
+});
 
 /**
  * Method that retrieves all the measurements from a given sensor
@@ -162,44 +170,18 @@ exports.postApparentColorMeasurement = (req, res) => {
 
     try {
         let measurement = req.body;
-        console.log(measurement);
+        console.log(req.file.path);
+        //ch.sendToQueue(process.env.QUEUE_NAME, new Buffer(JSON.stringify(measurement)));
         res.status(200).send({
             status: 'ok'
         });
-        /*
-        let connection = mysql.createConnection({
-            host: process.env.MYSQL_HOST,
-            user: process.env.MYSQL_USER,
-            password: process.env.MYSQL_PASSWORD,
-            database: process.env.MYSQL_DATABASE
-        });
-
-        connection.connect();
-
-        connection.query('INSERT INTO MEASUREMENTS(ID_USER, ID_SENSOR, VALUE_MEASURED, UNITS, MEASUREMENT_TIME, LATITUDE, LONGITUDE) ' +
-            'VALUES (?,?,?,?,?,?,?)',
-            [measurement.ID_USER, measurement.ID_SENSOR, measurement.VALUE_MEASURED, measurement.UNITS, measurement.MEASUREMENT_TIME,
-                measurement.LATITUDE, measurement.LONGITUDE],
-            function (err, rows, fields) {
-                if (err) {
-                    console.log(err);
-                    res.status(500).send(err);
-                }
-                connection.query('UPDATE USERS SET SCORE = SCORE + 50 WHERE ID=?', [measurement.ID_USER],
-                    (err, values, flds) => {
-                        if (err) {
-                            console.log(err);
-                            res.status(500).send(err);
-                        }
-                        res.status(200).send({
-                            ID_USER: measurement.ID_USER,
-                            SCORE: 50
-                        });
-                        connection.end()
-                    });
-            });
-            */
     }catch (e) {
         console.log(e);
     }
 };
+
+
+process.on('exit', (code) => {
+    ch.close();
+    console.log(`Closing rabbitmq channel`);
+});
