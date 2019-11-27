@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
+import {CSVLink} from 'react-csv';
 import MapContainer from './MapContainer';
 import axios from 'axios';
 import './Home.css';
 
 export default class Home extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             measurments: []
@@ -14,10 +15,10 @@ export default class Home extends Component {
 
     componentDidMount() {
         axios.get('/API/measurements')
-            .then((res)=>{
+            .then((res) => {
                 return res.data
             })
-            .then((data)=>{
+            .then((data) => {
                 this.setState({
                     measurements: data
                 })
@@ -39,6 +40,14 @@ export default class Home extends Component {
                 <div className="jumbotron">
                     <h1 className="display-4">Probetheus</h1>
                     <p className="lead">Una aplicación para monitorear las aguas y empoderar a la gente de Samacá</p>
+                    <CSVLink
+                        data={this.state.measurements || []}
+                        filename='datos_probetheus.csv'
+                        className='btn btn-success'
+                        target='_blank'
+                    >
+                        Descargar Datos
+                    </CSVLink>
                 </div>
                 <div className='row'>
                     <MapContainer measurements={this.state.measurements}/>
