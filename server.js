@@ -11,7 +11,7 @@ const app = express();
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, "frontend/build")));
-app.use(express.static(path.join(__dirname, '/contest_data')));
+app.use(express.static(path.join(__dirname, '/resources')));
 
 const Storage = multer.diskStorage({
     destination(req, file, callback) {

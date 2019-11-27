@@ -2,11 +2,15 @@ const mysql = require('mysql');
 const amqp = require('amqplib/callback_api');
 let ch = null;
 
-amqp.connect(process.env.RBMQ_URL,(err, conn)=>{
-   conn.createChannel((err, channel)=>{
-       ch = channel;
-   })
-});
+try {
+    amqp.connect(process.env.RBMQ_URL, (err, conn) => {
+        conn.createChannel((err, channel) => {
+            ch = channel;
+        })
+    });
+}catch (e) {
+    console.log(e);
+}
 
 /**
  * Method that retrieves all the measurements from a given sensor
